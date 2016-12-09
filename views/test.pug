@@ -1,0 +1,115 @@
+doctype html
+html(lang="en")
+	head
+		title #{title}
+		script(src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js")
+	body
+		div
+			textarea(id="a1" style="height:800px;width:900px")
+		div
+			p(id="a2") Watching : 
+		div
+			p(id="a3") Prediction : 
+	script(type='text/javascript').
+		var doc = document
+		var content = ""
+		var dict = {
+			"abs" : "Abs",
+			"unity" : "Unity"
+		}
+
+		var response = ""
+		var startCur = 0
+		var endCur = 0
+
+		function selectionChange() {
+			startCur = $("#a1")[0].selectionStart - 1
+			endCur = $("#a1")[0].selectionStart - 1
+			var word = ""
+
+			if(content.length!=0)
+			{
+				for(i = startCur;i>=0;i--)
+				{
+					if(content[i].match(/\W/))
+					{
+						startCur = i + 1
+						break
+					}
+					else if(i == 0)
+					{
+						startCur = i
+					}
+				}
+
+				for(i = endCur + 1 == content.length ? endCur : endCur+1;i<content.length;i++)
+				{
+					if(content[i].match(/\W/))
+					{
+						endCur = i-1
+						break
+					}
+					else if(i == content.length - 1)
+					{
+						endCur = i
+						break
+					}
+				}
+
+				if(startCur != content.length)
+					var word = content.substring(startCur,endCur+1)
+				else
+					var word = ""
+
+				if(word in dict)
+				{
+					response = content.substring(0,startCur) + dict[word] + content.substring(endCur+1,content.length)
+					$("#a3").html("Prediction : " + dict[word])
+				}
+				else
+				{
+					response = content
+					$("#a3").html("Prediction : ")
+				}
+			}
+
+			$("#a2").html("Watching : " + word)
+		}
+
+		$("#a1").bind("keydown", function(e){
+			if(e.altKey && e.keyCode == 65) {
+				$("#a1").val(response)
+				content = $('#a1').val()
+				console.log($('#a1')[0])
+				setCaretPosition($('#a1')[0],startCur)
+			}
+		})
+
+		$('#a1').bind('input propertychange', function() {
+			content = $('#a1').val()
+			selectionChange()
+		});
+
+
+		$("#a1").bind("focus", function(){
+			doc.addEventListener("selectionchange", selectionChange, false);
+		})
+		
+		$("#a1").bind("blur", function(){
+			doc.removeEventListener("selectionchange", selectionChange, false);
+		})
+
+		function setCaretPosition(ctrl, pos){
+			if(ctrl.setSelectionRange)
+			{
+				ctrl.focus();
+				ctrl.setSelectionRange(pos,pos);
+			}
+			else if (ctrl.createTextRange) {
+			var range = ctrl.createTextRange();
+			range.collapse(true);
+			range.moveEnd('character', pos);
+			range.moveStart('character', pos);
+			range.select();
+			}
+		}
