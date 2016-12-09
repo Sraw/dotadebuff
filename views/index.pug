@@ -1,0 +1,30 @@
+doctype html
+html(lang="en")
+	head
+		title #{title}
+		script(src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js")
+		script(src="//cdn.bootcss.com/gsap/latest/plugins/CSSPlugin.min.js")
+		script(src="//cdn.bootcss.com/gsap/latest/easing/EasePack.min.js")
+		script(src="//cdn.bootcss.com/gsap/latest/TweenLite.min.js")
+		script(src="//cdn.bootcss.com/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js")
+		script(src="/js/animation.js")
+		link(rel="stylesheet" href="//cdn.bootcss.com/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css")
+		link(rel="stylesheet" href="/css/test.css")
+	body
+		div#c1.container.main_container
+			div.navigator.navigator_none_left
+			div.content
+			div.navigator.navigator_right
+		div#c2.container.right_container
+			div.navigator.navigator_left
+			div.content
+			div.navigator.navigator_right
+		div#c3.container.hidden_container
+			div.navigator.navigator_left
+			div.content
+			div.navigator.navigator_right
+		div#c4.container.hidden_container
+			div.navigator.navigator_left
+			div.content
+			div.navigator.navigator_right
+

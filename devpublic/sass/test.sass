@@ -1,0 +1,84 @@
+html, body
+    height: 100%
+    width: 100%
+    margin: 0px
+
+body
+	text-align: center
+	position: fixed
+	background-color: #0f0f0f
+
+$white: white
+$grey: #DEDEDE
+$light: #E6E6FA
+
+.container
+	position: absolute
+	width: 1000px
+	height: 800px
+	margin-top: 80px
+	border: 2px solid
+	border-radius: 25px
+	background-color: $white
+	background-clip:content-box
+	
+.main_container
+	text-align: left
+	left: 50%
+	margin-left: -500px
+	.navigator_left, .navigator_right
+		&:hover
+			background-color: $light
+			cursor: pointer
+
+.left_container
+	left: 0%
+	margin-left: -900px
+
+.right_container
+	left: 100%
+	margin-left: -100px
+
+.hidden_container
+	left: 150%
+	margin-left: -500px
+
+.content
+	vertical-align: top
+	display: inline-block
+	width: 850px
+	margin: 0 50px
+	height: 100%
+
+.subcontent
+	text-align: left
+	height: 700px
+	margin-top: 50px
+
+.title
+	font-size: 50px
+	font-weight: bold
+	margin-top: 0px
+	margin-bottom: 20px
+
+.navigator
+	display: inline-block
+	background-color: $grey
+	height: 100%
+	width: 25px
+
+.navigator_left
+	border-radius: 25px 0 0 25px
+
+.navigator_right
+	border-radius: 0 25px 25px 0
+
+.navigator_none_left
+	background-color: $white
+	border-radius: 25px 0 0 25px
+
+.navigator_none_right
+	background-color: $white
+	border-radius: 0 25px 25px 0
+
+
