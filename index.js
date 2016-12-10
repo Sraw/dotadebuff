@@ -4,7 +4,7 @@ import bodyParser from 'body-parser'
 import path from 'path'
 import pug from 'pug'
 
-var port = 3000
+let port = 3000
 
 if(process.env.NODE_ENV != "production")
 {
@@ -46,6 +46,24 @@ app.get('/assistant',function(req, res){
 		title:"翻译助手"
 	})
 })
+
+app.post('/gitpull',function(req, res){
+	var token = req.body.token
+	if(token == "dota_how_to_play")
+	{
+		run_cmd('sh', ['./deploy.sh'], function(text){ console.log(text) });
+		res.send("pull success.")
+	}
+})
+
+function run_cmd(cmd, args, callback) {
+  var spawn = require('child_process').spawn;
+  var child = spawn(cmd, args);
+  var resp = "";
+ 
+  child.stdout.on('data', function(buffer) { resp += buffer.toString(); });
+  child.stdout.on('end', function() { callback (resp) });
+}
 
 app.listen(port,function(){
 	console.log("server started")
