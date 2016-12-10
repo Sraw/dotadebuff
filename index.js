@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import path from 'path'
 import pug from 'pug'
 
+var port = 3000
 
 if(process.env.NODE_ENV != "production")
 {
@@ -12,6 +13,7 @@ if(process.env.NODE_ENV != "production")
 }
 else
 {
+	port = 80
 	console.log("Using production mode, please make sure that every resource has been prepared.")
 }
 
@@ -27,7 +29,6 @@ app.set('view engine', 'pug')
 
 app.get('/',function(req, res){
 	res.render('index',{
-		updateTime:"2016/10/23",
 		title:"Dota怎么玩"
 	})
 })
@@ -35,7 +36,9 @@ app.get('/',function(req, res){
 app.post('/getcontent',function(req, res){
 	console.log(req.body)
 	var index = req.body.index
-	res.send(pug.compileFile(__dirname + '/views/content/page' + index + '.pug')())
+	res.send(pug.compileFile(__dirname + '/views/content/page' + index + '.pug')({
+		updateTime:"2016/10/23"
+	}))
 })
 
 app.get('/assistant',function(req, res){
@@ -44,6 +47,6 @@ app.get('/assistant',function(req, res){
 	})
 })
 
-app.listen(3000,function(){
+app.listen(port,function(){
 	console.log("server started")
 })
