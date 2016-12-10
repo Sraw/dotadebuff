@@ -6,9 +6,10 @@ import pug from 'pug'
 
 let port = 3000
 
+require('gulp/bin/gulp')
+
 if(process.env.NODE_ENV != "production")
 {
-	require('gulp/bin/gulp')
 	console.log("Using development mode, call the gulp to build resource.")
 }
 else
