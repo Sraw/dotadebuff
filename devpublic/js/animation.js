@@ -5,6 +5,12 @@ $(function(){
 
 	var AniTime = 0.5
 
+	var height = document.body.clientHeight
+
+	var marginTop = height/950 * 80
+
+	$(".container").css("margin-top", marginTop)
+
 	contentajax($(".main_container"))
 
 	clearevent($(".main_container"))
