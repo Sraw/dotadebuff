@@ -43,7 +43,7 @@ app.post('/getcontent',function(req, res){
 })
 
 app.get('/assistant',function(req, res){
-	res.render('test',{
+	res.render('assistant',{
 		title:"翻译助手"
 	})
 })

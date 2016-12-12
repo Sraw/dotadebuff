@@ -1,0 +1,38 @@
+doctype html
+html(lang="en")
+	head
+		title #{title}
+		link(rel="stylesheet" href="/css/assistant/assistant.css")
+		script(src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js")
+		script(src="/UEditor/ueditor.config.js")
+		script(src="/UEditor/ueditor.all.js")
+		script(src="/js/assistant/dict_abilities.js")
+		script(src="/js/assistant/dict_items.js")
+		script(src="/js/assistant/dict_heros.js")
+		script(src="/js/assistant/dict_systems.js")
+		script(src="/js/assistant/assistant.js")
+	body
+		div
+			div#pred
+				table
+					tr
+						td
+							| Alt + 1
+						td
+							| Alt + 2
+						td
+							| Alt + 3
+						td
+							| Alt + 4
+						td
+							| Alt + 5
+						td
+							| Alt + 6
+					tr
+						td.indicate
+						td.indicate
+						td.indicate
+						td.indicate
+						td.indicate
+						td.indicate
+			div#editor
