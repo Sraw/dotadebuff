@@ -50,6 +50,7 @@ app.get('/assistant',function(req, res){
 
 app.post('/gitpull',function(req, res){
 	var token = req.body.token
+	console.log("token:" + token)
 	if(token == "dota_how_to_play")
 	{
 		run_cmd('sh', ['./deploy.sh'], function(text){ console.log(text) });
