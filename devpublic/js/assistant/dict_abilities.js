@@ -1,5 +1,4 @@
 var Abilities = {
-
 	"dict": {
 		"Fissure": [
 			"Earthshaker",
@@ -286,35 +285,57 @@ var Abilities = {
 		]
 	},
 	buildDict: function(text) {
-		if (text in this.dict) {
-			var array = this.dict[text]
-			var OriginName = text
+		text = text.toLowerCase()
+			//text = pluralize.singular(text)
 
-			if (array.length == 2) {
-				var heroname = array[0]
-				var ChineseName = array[1]
-				return [
-					ChineseName,
-					"{{A|" + OriginName + "|" + heroname + "}}",
-					"[[#" + ChineseName + "|" + ChineseName + "]]",
-					"[[" + OriginName + "/zh-hans|" + ChineseName + "]]",
-					"[[" + heroname + "/zh-hans#" + ChineseName + "|" + ChineseName + "]]",
-				]
-			} else if (array.length == 3) {
-				var heroname = array[0]
-				var heroname2 = array[1]
-				var ChineseName = array[2]
-				return [
-					ChineseName,
-					"{{A|" + OriginName + "|" + heroname + "}}",
-					"{{A|" + OriginName + "|" + heroname2 + "}}",
-					"[[#" + ChineseName + "|" + ChineseName + "]]",
-					"[[" + OriginName + "/zh-hans|" + ChineseName + "]]",
-					"[[" + heroname + "/zh-hans#" + ChineseName + "|" + ChineseName + "]]",
-				]
+		var array = []
+		var OriginName = null
+		var result = []
+
+		//[[#Enchant Totem|Enchant Totem]]形式
+		var textForm1 = text.match(/^\[\[#([^|]+)\|([^\]]+)\]\]$/)
+
+		if (textForm1 != null) {
+			if (textForm1[1] == textForm1[2] && textForm1[1] in this.dict) {
+				array = this.dict[textForm1[1]]
+				OriginName = textForm1[1]
 			}
-		} else {
-			return []
 		}
+
+		//直接获取
+		if (text in this.dict) {
+			array = this.dict[text]
+			OriginName = text
+		}
+
+		//构建数组
+		if (array.length == 2) {
+			var heroname = array[0]
+			var ChineseName = array[1]
+
+			result = result.concat([
+				ChineseName,
+				"{{A|" + OriginName + "|" + heroname + "}}",
+				"[[#" + ChineseName + "|" + ChineseName + "]]",
+				"[[" + OriginName + "/zh-hans|" + ChineseName + "]]",
+				"[[" + heroname + "/zh-hans#" + ChineseName + "|" + ChineseName + "]]",
+			])
+		} else if (array.length == 3) {
+			var heroname = array[0]
+			var heroname2 = array[1]
+			var ChineseName = array[2]
+
+			result = result.concat([
+				ChineseName,
+				"{{A|" + OriginName + "|" + heroname + "}}",
+				"{{A|" + OriginName + "|" + heroname2 + "}}",
+				"[[#" + ChineseName + "|" + ChineseName + "]]",
+				"[[" + OriginName + "/zh-hans|" + ChineseName + "]]",
+				"[[" + heroname + "/zh-hans#" + ChineseName + "|" + ChineseName + "]]",
+			])
+		}
+
+		//返回结果
+		return result
 	}
 }

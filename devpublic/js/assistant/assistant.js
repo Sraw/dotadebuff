@@ -1,5 +1,6 @@
 $(function(){
-
+	var youdaoUrl = "http://fanyi.youdao.com/openapi.do?keyfrom=Translateapp80&key=2011563925&type=data&doctype=jsonp&version=1.1&q="
+	
 	var start = 0
 	var end = 0
 
@@ -7,22 +8,26 @@ $(function(){
 
 	var ue = UE.getEditor('editor');
 
-	ue.addListener('keydown', keyPress)
+	ue.addListener('keydown', ReplaceFromDict)
+	ue.addListener('keydown', QueryForTrans)
 
 	ue.addListener('selectionchange', selectionChange)
 
  	function selectionChange(type) {
  		var text = ue.selection.getText()
-     	console.log(text)
-
-     	var td = $(".indicate")
+ 		var td = $(".indicate")
 
      	td.text("")
+
+     	console.log(text)
 
      	var dict = []
 
      	dict = dict.concat(Abilities.buildDict(text))
-     	dict = dict.concat(Items.buildDict(text))		
+     	dict = dict.concat(Items.buildDict(text))
+     	dict = dict.concat(Systems.buildDict((text)))
+
+     	console.log(dict)
 
 		indicateMax = dict.length
 		for(var i = 0; i < indicateMax; i++)
@@ -31,8 +36,7 @@ $(function(){
 		}
  	}
 
-	function keyPress(type, e) {
-
+	function ReplaceFromDict(type, e) {
 		var selectedCode = e.keyCode - 49
 
 		if(e.altKey)
@@ -41,6 +45,42 @@ $(function(){
 				var value = $($(".indicate")[selectedCode]).text()
 				ue.execCommand('insertHtml', value)
 				indicateMax = 0
+			}
+		}
+	}
+
+	function QueryForTrans(type, e) {
+		if(e.altKey && e.keyCode == 81)
+		{
+			var text = ue.selection.getText()
+			console.log(text)
+
+     		if(!text.match(/^[\u4e00-\u9fa5]+$/))
+     		{
+				$.ajax({
+					url: youdaoUrl + encodeURI(text),
+					type: "GET",
+					dataType: "jsonp",
+					jsonpCallback: "show",
+					success: function(json) {
+						switch(json.errorCode)
+						{
+							case 0:
+								$(".trans").text(json["translation"][0])
+								break
+							case 20:
+								$(".trans").text("要翻译的文本过长")
+								break
+						}
+						
+					},
+					complete: function(data) {
+						console.log(data)
+					},
+					error: function() {
+						$(".trans").text("出现错误，可能由于选中文本过长")
+					}
+				})
 			}
 		}
 	}

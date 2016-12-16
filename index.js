@@ -38,7 +38,7 @@ app.post('/getcontent',function(req, res){
 	console.log(req.body)
 	var index = req.body.index
 	res.send(pug.compileFile(__dirname + '/views/content/page' + index + '.pug')({
-		updateTime:"2016/10/23"
+		updateTime:"2016/12/15"
 	}))
 })
 
