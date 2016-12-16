@@ -3,6 +3,7 @@ import loghelper from './logHelper'
 import bodyParser from 'body-parser'
 import path from 'path'
 import pug from 'pug'
+import compress from "compression"
 
 let port = 3000
 
@@ -20,6 +21,7 @@ else
 
 let app = express()
 
+app.use(compress())
 app.use(loghelper)
 app.use('/', express.static(__dirname + '/public'));
 app.use(bodyParser.json());
