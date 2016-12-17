@@ -15,45 +15,56 @@ html(lang="en")
 	body
 		div
 			div
-				table#pred
+				table.main
 					tr
-						td
-							| Alt + 1
-						td.indicate
-					tr
-						td
-							| Alt + 2
-						td.indicate
-					tr
-						td
-							| Alt + 3
-						td.indicate
-					tr
-						td
-							| Alt + 4
-						td.indicate
-					tr
-						td
-							| Alt + 5
-						td.indicate
-					tr
-						td
-							| Alt + 6
-						td.indicate
-					tr
-						td
-							| Alt + 7
-						td.indicate
-					tr
-						td
-							| Alt + 8
-						td.indicate
-					tr
-						td
-							| Alt + 9
-						td.indicate
-					tr
-						td
-							| 有道翻译：
-						td.trans
-			div#editor
+						td#pred_td
+							table#pred_table
+								tr
+									td
+										| Alt + 1
+									td.indicate
+								tr
+									td
+										| Alt + 2
+									td.indicate
+								tr
+									td
+										| Alt + 3
+									td.indicate
+								tr
+									td
+										| Alt + 4
+									td.indicate
+								tr
+									td
+										| Alt + 5
+									td.indicate
+								tr
+									td
+										| Alt + 6
+									td.indicate
+								tr
+									td
+										| Alt + 7
+									td.indicate
+								tr
+									td
+										| Alt + 8
+									td.indicate
+								tr
+									td
+										| Alt + 9
+									td.indicate
+						td#trans_td
+							table#trans_table
+								tr
+									td
+										| 翻译:
+									td#trans
+								tr
+									td
+										| 词典:
+									td
+										textarea#dictionary(readonly="readonly")
+			div
+				div#editor
