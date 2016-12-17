@@ -19,15 +19,12 @@ $(function(){
 
      	td.text("")
 
-     	console.log(text)
-
      	var dict = []
 
      	dict = dict.concat(Abilities.buildDict(text))
      	dict = dict.concat(Items.buildDict(text))
      	dict = dict.concat(Systems.buildDict((text)))
-
-     	console.log(dict)
+     	dict = dict.concat(Heros.buildDict((text)))
 
 		indicateMax = dict.length
 		for(var i = 0; i < indicateMax; i++)
@@ -66,10 +63,23 @@ $(function(){
 						switch(json.errorCode)
 						{
 							case 0:
-								$(".trans").text(json["translation"][0])
+								$("#trans").text(json["translation"][0])
+								if("basic" in json)
+								{
+									var value = ""
+									for(var i = 0; i < json.basic.explains.length;i++)
+									{
+										value += json.basic.explains[i] + '\n'
+										$("#dictionary").val(value)
+									}
+								}
+								else
+								{
+									$("#dictionary").val("")
+								}
 								break
 							case 20:
-								$(".trans").text("要翻译的文本过长")
+								$("#trans").text("要翻译的文本过长")
 								break
 						}
 						
@@ -78,9 +88,14 @@ $(function(){
 						console.log(data)
 					},
 					error: function() {
-						$(".trans").text("出现错误，可能由于选中文本过长")
+						$("#trans").text("出现错误，可能由于选中文本过长")
 					}
 				})
+			}
+			else
+			{
+				$("#trans").text("")
+				$("#dictionary").val("")
 			}
 		}
 	}
