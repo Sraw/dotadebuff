@@ -55,19 +55,29 @@ app.post('/gitpull',function(req, res){
 	console.log("token:" + token)
 	if(token == "dota_how_to_play")
 	{
-		run_cmd('sh', ['./deploy.sh'], function(text){ console.log(text) });
-		res.send("pull success.")
+		console.log("start pulling")
+		console.log("deploy test")
+
+		var commands = 'cd /root/dota_how_to_play && git pull'
+
+		var cp = require('child_process');
+		
+		cp.exec(commands, function(err, out, code) {
+			if (err instanceof Error) {
+				res.status(500)
+				res.send('Server Internal Error.')
+				throw err
+			}
+			//process.stderr.write(err)
+			//process.stdout.write(out)
+			res.status(200)
+			res.send('Deploy Done.')
+			console.log("pulling OK")
+
+			cp.exec('pm2 reload 0')
+		})
 	}
 })
-
-function run_cmd(cmd, args, callback) {
-  var spawn = require('child_process').spawn;
-  var child = spawn(cmd, args);
-  var resp = "";
- 
-  child.stdout.on('data', function(buffer) { resp += buffer.toString(); });
-  child.stdout.on('end', function() { callback (resp) });
-}
 
 app.listen(port,function(){
 	console.log("server started")
