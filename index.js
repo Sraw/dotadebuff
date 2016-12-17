@@ -56,7 +56,6 @@ app.post('/gitpull',function(req, res){
 	if(token == "dota_how_to_play")
 	{
 		console.log("start pulling")
-		console.log("deploy test")
 
 		var commands = 'cd /root/dota_how_to_play && git pull'
 
