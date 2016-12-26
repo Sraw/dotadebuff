@@ -68,3 +68,40 @@ html(lang="en")
 										textarea#dictionary(readonly="readonly")
 			div
 				div#editor
+		div#upload_private
+			p 录入自定义词典：
+			table
+				tr
+					td
+						| 录入模式
+					td
+						select.input#Pattern
+							option(value="N", selected="selected") 普通模式
+							option(value="P") 替换模式
+				tr
+					td
+						| 源名称
+					td
+						input.input#OriginalName
+				tr
+					td
+						| 中文名
+					td
+						input.input#ChineseName
+				tr
+					td
+						| 类别
+					td
+						select.input#Type
+							option(value="N", selected="selected") 无
+							option(value="H") 英雄
+							option(value="A") 技能
+							option(value="I") 物品
+				tr
+					td
+						| 父级
+					td
+						input.input#Father
+				tr
+					td
+						button#submit 提交
