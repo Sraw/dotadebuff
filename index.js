@@ -1,13 +1,14 @@
-import express from 'express'
-import loghelper from './logHelper'
-import bodyParser from 'body-parser'
-import path from 'path'
-import pug from 'pug'
+import express from "express"
+import loghelper from "./logHelper"
+import bodyParser from "body-parser"
+import path from "path"
+import pug from "pug"
 import compress from "compression"
+import $ from "jquery"
 
 let port = 8080
 
-require('gulp/bin/gulp')
+require("gulp/bin/gulp")
 
 if (process.env.NODE_ENV != "production") {
 	console.log("Using development mode, call the gulp to build resource.")
@@ -18,6 +19,14 @@ else {
 }
 
 let app = express()
+let privateDict = {}
+try {
+	privateDict = require('./public/privateDict/dict.json')
+} catch (e) {
+	console.log(e)
+	privateDict = {}
+}
+console.log(privateDict)
 
 app.use(compress())
 app.use(loghelper)
@@ -36,7 +45,7 @@ app.get('/', function(req, res) {
 	})
 })
 
-app.post('/getcontent', function(req, res) {
+app.post('/getcontent', function(req, res){
 	console.log(req.body)
 	var index = req.body.index
 	res.send(pug.compileFile(__dirname + '/views/content/page' + index + '.pug')({
@@ -50,7 +59,35 @@ app.get('/assistant', function(req, res) {
 	})
 })
 
-app.post('/gitpull', function(req, res) {
+app.post('/download_pd', function(req, res){
+	if(privateDict == null)
+	{
+		res.status(500).json({error:'no privateDict'})
+	}
+	else
+	{
+		res.status(200).json(privateDict)
+	}
+})
+
+app.post('/upload_pd', function(req, res){
+	let fs = require('fs')
+	console.log(req.body)
+	Object.assign(privateDict, req.body)
+	let jsonfilepath = './public/privateDict/dict.json'
+
+	try {
+		fs.writeFile(jsonfilepath, JSON.stringify(privateDict, null, 2), 'utf8');
+		res.status(200).send("successfully update the privateDict")
+	} catch (e) {
+		res.status(500).send({
+			error: e
+		});
+	}
+	console.log(privateDict)
+})
+
+app.post('/gitpull',function(req, res){
 	var token = req.body.token
 	console.log("token:" + token)
 	if (token == "dota_how_to_play") {
