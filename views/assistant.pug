@@ -3,14 +3,15 @@ html(lang="en")
 	head
 		title #{title}
 		link(rel="stylesheet" href="/css/assistant/assistant.css")
+		link(rel="stylesheet" href="//cdn.quilljs.com/1.2.4/quill.snow.css")
 		script(src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js")
-		script(src="/js/assistant/pluralize.js")
-		script(src="/UEditor/ueditor.config.js")
-		script(src="/UEditor/ueditor.all.js")
-		script(src="/js/assistant/dict_abilities.js")
-		script(src="/js/assistant/dict_items.js")
-		script(src="/js/assistant/dict_heros.js")
-		script(src="/js/assistant/dict_systems.js")
+		script(src="//cdn.quilljs.com/1.2.4/quill.min.js")
+		script(src="/js/assistant/tools/pluralize.js")
+		script(src="/js/assistant/dictionary/dict_abilities.js")
+		script(src="/js/assistant/dictionary/dict_items.js")
+		script(src="/js/assistant/dictionary/dict_heros.js")
+		script(src="/js/assistant/dictionary/dict_systems.js")
+		script(src="/js/assistant/dictionary/dict_tools.js")
 		script(src="/js/assistant/assistant.js")
 	body
 		div
@@ -68,40 +69,4 @@ html(lang="en")
 										textarea#dictionary(readonly="readonly")
 			div
 				div#editor
-		div#upload_private
-			p 录入自定义词典：
-			table
-				tr
-					td
-						| 录入模式
-					td
-						select.input#Pattern
-							option(value="N", selected="selected") 普通模式
-							option(value="P") 替换模式
-				tr
-					td
-						| 源名称
-					td
-						input.input#OriginalName
-				tr
-					td
-						| 中文名
-					td
-						input.input#ChineseName
-				tr
-					td
-						| 类别
-					td
-						select.input#Type
-							option(value="N", selected="selected") 无
-							option(value="H") 英雄
-							option(value="A") 技能
-							option(value="I") 物品
-				tr
-					td
-						| 父级
-					td
-						input.input#Father
-				tr
-					td
-						button#submit 提交
+		

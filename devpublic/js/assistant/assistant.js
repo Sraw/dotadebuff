@@ -1,115 +1,121 @@
+/*global $, Quill, Heros, Items, Systems, Abilities, buildDict*/
 $(function() {
-	var youdaoUrl = "http://fanyi.youdao.com/openapi.do?keyfrom=Translateapp80&key=2011563925&type=data&doctype=jsonp&version=1.1&q="
+	var youdaoUrl = "http://fanyi.youdao.com/openapi.do?keyfrom=Translateapp80&key=2011563925&type=data&doctype=jsonp&version=1.1&q=";
 
-	var start = 0
-	var end = 0
+	var quill = new Quill('#editor', {
+		modules: {
+			toolbar: []
+		},
+		theme: 'snow'
+	});
 
-	var indicateMax = 0
+	function getMaxLength(dict) {
+		var maxLength = 0;
 
-	//console.log(privateDict)
+		$.each(Object.keys(dict), function(i, item) {
+			maxLength = Math.max(maxLength, item.length);
+		});
 
-	var ue = UE.getEditor('editor');
-
-	ue.addListener('keydown', ReplaceFromDict)
-	ue.addListener('keydown', QueryForTrans)
-
-	ue.addListener('selectionchange', selectionChange)
-
-	$("#submit").click(function() {
-		var Pattern = $("#Pattern").val()
-		var OriginalName = $("#OriginalName").val()
-		var ChineseName = $("#ChineseName").val()
-		var Type = $("#Type").val()
-		var Father = $("#Father").val()
-		var index = pluralize.singular(OriginalName.toLowerCase())
-
-		var target = {}
-		var json = {}
-
-		if (check(ChineseName))
-			json["ChineseName"] = ChineseName
-		else {
-			console.log("中文名不许为空！")
-			return
-		}
-
-		json["Pattern"] = Pattern
-
-		if (Pattern == "N") {
-			target[index] = json
-			if (check(OriginalName))
-				json["OriginalName"] = OriginalName
-			else {
-				console.log("源名不许为空！")
-				return
-			}
-			if (Type != "N") {
-				json["Type"] = Type
-			}
-			if (check(Father)) {
-				json["Father"] = Father
-			}
-		} else
-			target[OriginalName] = json
-
-
-
-		$.ajax({
-			url: "/upload_pd",
-			type: "post",
-			dataType: "html",
-			data: target,
-			success: function(data) {
-				alert(data)
-			},
-			complete: function(data) {
-				console.log(data)
-			},
-			error: function() {
-				alert(data)
-			}
-		})
-	})
-
-	function check(content) {
-		if (content == null || content == "")
-			return false
-		if (content.match(/^\s*$/))
-			return false
-		return true
+		return maxLength
 	}
 
-	function selectionChange(type) {
-		var text = ue.selection.getText()
-		var td = $(".indicate")
-
-		td.text("")
-
-		var dict = []
-
-		dict = BuildDict(text)
-
-		indicateMax = dict.length
-		for (var i = 0; i < indicateMax; i++) {
-			$(td[i]).text(dict[i])
+	var dictionary = {
+		"Heros": {
+			"dict": Heros,
+			"maxLength": getMaxLength(Heros)
+		},
+		"Items": {
+			"dict": Items,
+			"maxLength": getMaxLength(Items)
+		},
+		"Systems": {
+			"dict": Systems,
+			"maxLength": getMaxLength(Systems)
+		},
+		"Abilities": {
+			"dict": Abilities,
+			"maxLength": getMaxLength(Abilities)
 		}
 	}
 
-	function ReplaceFromDict(type, e) {
-		var selectedCode = e.keyCode - 49
+	var globalMaxLength = Math.max(
+		dictionary["Heros"]["maxLength"],
+		dictionary["Items"]["maxLength"],
+		dictionary["Systems"]["maxLength"],
+		dictionary["Abilities"]["maxLength"]
+	);
+
+
+	quill.on('editor-change', getWord);
+	var quill_e = document.querySelector('#editor');
+	quill_e.addEventListener('keydown', ReplaceFromDict);
+	quill_e.addEventListener('keydown', QueryForTrans);
+
+	var dicts = [];
+	var indicateMax = 0;
+
+	function getWord() {
+		var range = quill.getSelection();
+		var cursor = null;
+		var td = $(".indicate");
+		td.text("");
+
+		if (range) {
+			if (range.length == 0) {
+				cursor = range.index;
+			}
+		}
+
+		dicts = [];
+		let tmpSet = new Set();
+		for (let i = 0; i < globalMaxLength + 1; i++) {
+			let index = Math.max(cursor - i, 0);
+			for (let j = Math.max(i, 1); j < globalMaxLength + 1; j++) {
+				let tmp = quill.getText(index, j);
+				if (!tmpSet.has(tmp)) {
+					let tmp_dict = null;
+					tmp_dict = buildDict(tmp);
+					for (let _index in tmp_dict) {
+						dicts.push({
+							"content": tmp_dict[_index],
+							"start": index,
+							"end_length": j
+						});
+					}
+					tmpSet.add(tmp);
+				}
+			}
+		}
+		let sum = 0;
+		console.log(dicts)
+		for (let index in dicts) {
+			$(td[sum]).text(dicts[index]["content"]);
+			sum += 1;
+		}
+		indicateMax = sum;
+	}
+
+	function ReplaceFromDict(e) {
+		var selectedCode = e.keyCode - 49;
 
 		if (e.altKey) {
 			if (selectedCode >= 0 && selectedCode < indicateMax && indicateMax != 0) {
-				var value = $($(".indicate")[selectedCode]).text()
-				ue.execCommand('insertHtml', value)
-				indicateMax = 0
+				let selectedElement = dicts[selectedCode];
+				let value = selectedElement["content"];
+				let start = selectedElement["start"];
+				let end_length = selectedElement["end_length"];
+				console.log(value);
+				quill.deleteText(start, end_length);
+				quill.insertText(start, value);
+				quill.setSelection(start + value.length);
 			}
 		}
 	}
 
-	function QueryForTrans(type, e) {
+	function QueryForTrans(e) {
 		if (e.altKey && e.keyCode == 81) {
-			var text = ue.selection.getText()
+			var range = quill.getSelection();
+			var text = quill.getText(range.index, range.length)
 			console.log(text)
 
 			if (!text.match(/^[\u4e00-\u9fa5]+$/)) {
@@ -128,7 +134,8 @@ $(function() {
 										value += json.basic.explains[i] + '\n'
 										$("#dictionary").val(value)
 									}
-								} else {
+								}
+								else {
 									$("#dictionary").val("")
 								}
 								break
@@ -145,92 +152,10 @@ $(function() {
 						$("#trans").text("出现错误，可能由于选中文本过长")
 					}
 				})
-			} else {
+			}
+			else {
 				$("#trans").text("")
 				$("#dictionary").val("")
-			}
-		}
-	}
-
-	function BuildDict(text) {
-		var array = null
-		var result = []
-
-		text = text.toLowerCase()
-		text = pluralize.singular(text)
-
-
-
-		var textForm1 = text.match(/^\[\[([^\]]+)\]\]$/)
-
-		if (textForm1 != null) {
-			textForm1 = textForm1[1]
-			if (textForm1 in Heros) {
-				array = Heros[textForm1]
-			}
-			if (textForm1 in Items) {
-				array = Items[textForm1]
-			}
-			if (textForm1 in Systems) {
-				array = Systems[textForm1]
-			}
-			if (textForm1 in Abilities) {
-				array = Abilities[textForm1]
-			}
-		}
-
-
-		if (text in Heros) {
-			array = Heros[text]
-		}
-		if (text in Items) {
-			array = Items[text]
-		}
-		if (text in Systems) {
-			array = Systems[text]
-		}
-		if (text in Abilities) {
-			array = Abilities[text]
-		}
-
-		if (array != null) {
-			var OriginalName = array["OriginalName"]
-			var ChineseName = array["ChineseName"]
-
-			result = result.concat([
-				ChineseName
-			])
-
-			ChineseName.forEach(function(e) {
-				result = result.concat([
-					"[[" + OriginalName + "/zh-hans|" + e + "]]"
-				])
-			})
-
-			if ("Type" in array) {
-				var type = array["Type"]
-				result = result.concat([
-					"{{" + type + "|" + OriginalName + "}}"
-				])
-			}
-		}
-		return result
-
-		function makeArray(text) {
-			if (textForm1 != null) {
-				textForm1 = textForm1[1]
-				if (textForm1 in Heros) {
-					array = Heros[textForm1]
-				}
-				if (textForm1 in Items) {
-					array = Items[textForm1]
-				}
-				if (textForm1 in Systems) {
-					array = Systems[textForm1]
-				}
-				if (textForm1 in Abilities) {
-					array = Abilities[textForm1]
-				}
 			}
 		}
 	}
