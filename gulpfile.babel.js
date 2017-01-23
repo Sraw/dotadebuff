@@ -14,9 +14,6 @@ const css_src = 'devpublic/**/*.css'
 const js_src = 'devpublic/**/*.js'
 const js_dir = 'public'
 
-const UEditor_src = ['devpublic/UEditor/**/*', '!devpublic/UEditor/**/*.js', '!devpublic/UEditor/**/*.css']
-const UEditor_dir = "public/UEditor"
-
 if(process.env.NODE_ENV != "production")
 {
   gulp.task('sass2css', function() {
@@ -64,9 +61,4 @@ else
   })
 }
 
-gulp.task('UEditor',function() {
-  return  gulp.src(UEditor_src)
-              .pipe(gulp.dest(UEditor_dir))
-})
-
-gulp.task('default',['sass2css','js','css','UEditor'])
+gulp.task('default',['sass2css','js','css'])
