@@ -21,10 +21,7 @@ $(function(){
 
      	var dict = []
 
-     	dict = dict.concat(Abilities.buildDict(text))
-     	dict = dict.concat(Items.buildDict(text))
-     	dict = dict.concat(Systems.buildDict((text)))
-     	dict = dict.concat(Heros.buildDict((text)))
+     	dict = BuildDict(text)
 
 		indicateMax = dict.length
 		for(var i = 0; i < indicateMax; i++)
@@ -98,5 +95,69 @@ $(function(){
 				$("#dictionary").val("")
 			}
 		}
+	}
+
+	function BuildDict(text) {
+		text = text.toLowerCase()
+		text = pluralize.singular(text)
+
+		var array = null
+		var result = []
+
+		var textForm1 = text.match(/^\[\[([^\]]+)\]\]$/)
+
+		if (textForm1 != null) {
+			textForm1 = textForm1[1]
+			if (textForm1 in Heros) {
+				array = Heros[textForm1]
+			}
+			if (textForm1 in Items) {
+				array = Items[textForm1]
+			}
+			if (textForm1 in Systems) {
+				array = Systems[textForm1]
+			}
+			if (textForm1 in Abilities) {
+				array = Abilities[textForm1]
+			}
+		}
+
+
+		if (text in Heros) {
+			array = Heros[text]
+		}
+		if (text in Items) {
+			array = Items[text]
+		}
+		if (text in Systems) {
+			array = Systems[text]
+		}
+		if (text in Abilities) {
+			array = Abilities[text]
+		}
+
+		if(array != null)
+		{
+			var OriginalName = array["OriginalName"]
+			var ChineseName = array["ChineseName"]
+
+			result = result.concat([
+				ChineseName
+			])
+
+			ChineseName.forEach(function(e) {
+				result = result.concat([
+					"[[" + OriginalName + "/zh-hans|" + e + "]]"
+				])
+			})
+
+			if ("Type" in array) {
+				var type = array["Type"]
+				result = result.concat([
+					"{{" + type + "|" + OriginalName + "}}"
+				])
+			}
+		}
+		return result
 	}
 })
