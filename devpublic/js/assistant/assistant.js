@@ -87,7 +87,6 @@ $(function() {
 			}
 		}
 		let sum = 0;
-		console.log(dicts)
 		for (let index in dicts) {
 			$(td[sum]).text(dicts[index]["content"]);
 			sum += 1;

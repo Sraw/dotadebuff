@@ -10,7 +10,6 @@ export default function(app) {
 	})
 
 	app.post('/getcontent', function(req, res) {
-		console.log(req.body)
 		var index = req.body.index
 		res.send(pug.compileFile(process.cwd() + '/views/content/page' + index + '.pug')({
 			updateTime: "2016/12/15"

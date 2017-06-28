@@ -6,7 +6,6 @@ export default function(app) {
 		console.log(e)
 		privateDict = {}
 	}
-	console.log(privateDict)
 
 	app.post('/download_pd', function(req, res) {
 		if (privateDict == null) {
